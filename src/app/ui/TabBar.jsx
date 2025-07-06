@@ -1,39 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, BookOpen, Search, Star, User } from 'lucide-react';
 
 export const TabBar = () => {
-    const [activeTab, setActiveTab] = useState('inicio');
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const tabs = [
         {
             id: 'inicio',
             label: 'Inicio',
             icon: Home,
+            path: '/',
         },
         {
             id: 'leer',
             label: 'Leer',
             icon: BookOpen,
+            path: '/leer',
         },
         {
             id: 'buscar',
             label: 'Buscar',
             icon: Search,
+            path: '/buscar',
         },
         {
             id: 'favoritos',
             label: 'Favoritos',
             icon: Star,
+            path: '/favoritos',
         },
         {
             id: 'perfil',
             label: 'Perfil',
             icon: User,
+            path: '/perfil',
         },
     ];
 
-    const handleTabClick = tabId => {
-        setActiveTab(tabId);
+    const handleTabClick = path => {
+        navigate(path);
     };
 
     return (
@@ -41,12 +48,12 @@ export const TabBar = () => {
             <div className="flex justify-around items-center">
                 {tabs.map(tab => {
                     const IconComponent = tab.icon;
-                    const isActive = activeTab === tab.id;
+                    const isActive = location.pathname === tab.path;
 
                     return (
                         <button
                             key={tab.id}
-                            onClick={() => handleTabClick(tab.id)}
+                            onClick={() => handleTabClick(tab.path)}
                             className={`flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all duration-200 min-w-0 flex-1 ${
                                 isActive
                                     ? 'text-orange-600 bg-orange-50'

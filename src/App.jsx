@@ -1,11 +1,6 @@
 import React from 'react';
-import { Page } from './components/page/Page';
-import { AppMovil } from './app/AppMovil';
+import { AppRouter } from './routes/AppRouter';
 
 export const App = () => {
-    return (
-        <>
-            <AppMovil />
-        </>
-    );
+    return <AppRouter />;
 };
