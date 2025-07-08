@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import {
     User,
     Settings,
@@ -24,14 +26,20 @@ import {
     Star,
     Clock,
     BarChart3,
+    AlertCircle,
 } from 'lucide-react';
 
 export const Profile = () => {
+    const { currentUser, logout } = useAuth();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
     const [userData, setUserData] = useState({
-        name: 'María González',
-        email: 'maria@email.com',
-        avatar: null,
-        joinDate: '2024-01-01',
+        name: currentUser?.displayName || currentUser?.name || 'Usuario',
+        email: currentUser?.email || 'email@ejemplo.com',
+        avatar: currentUser?.photoURL || null,
+        joinDate: currentUser?.metadata?.creationTime || '2024-01-01',
         preferredVersion: 'RV60',
         notifications: {
             dailyReminder: true,
@@ -107,6 +115,27 @@ export const Profile = () => {
         { id: 'dhh', name: 'Dios Habla Hoy', abbr: 'DHH' },
     ];
 
+    // Función para manejar logout
+    const handleLogout = async () => {
+        try {
+            setError('');
+            setLoading(true);
+
+            const result = await logout();
+
+            if (result.success) {
+                navigate('/auth');
+            } else {
+                setError(result.error || 'Error al cerrar sesión');
+            }
+        } catch (error) {
+            console.error('Error en logout:', error);
+            setError('Error inesperado al cerrar sesión');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const toggleNotification = type => {
         setUserData(prev => ({
             ...prev,
@@ -164,6 +193,18 @@ export const Profile = () => {
                         <p className="text-blue-300 text-xs mt-1">
                             Miembro desde {formatJoinDate(userData.joinDate)}
                         </p>
+                        {/* Estado de verificación de email */}
+                        <div
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+                                currentUser?.emailVerified
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-yellow-100 text-yellow-800'
+                            }`}
+                        >
+                            {currentUser?.emailVerified
+                                ? '✓ Verificado'
+                                : '⚠ Sin verificar'}
+                        </div>
                     </div>
                     <button
                         onClick={() => setShowEditProfile(true)}
@@ -175,6 +216,14 @@ export const Profile = () => {
             </div>
 
             <div className="px-6 -mt-4 space-y-6">
+                {/* Error de logout */}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-3 flex items-center">
+                        <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
+                        <span className="text-red-700 text-sm">{error}</span>
+                    </div>
+                )}
+
                 {/* Estadísticas principales */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                     <div className="flex items-center mb-4">
@@ -572,9 +621,26 @@ export const Profile = () => {
 
                 {/* Cerrar sesión */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <button className="w-full flex items-center justify-center p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                        <LogOut className="w-5 h-5 mr-2" />
-                        Cerrar sesión
+                    <button
+                        onClick={handleLogout}
+                        disabled={loading}
+                        className={`w-full flex items-center justify-center p-3 rounded-lg transition-colors ${
+                            loading
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'text-red-600 hover:bg-red-50'
+                        }`}
+                    >
+                        {loading ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600 mr-2"></div>
+                                Cerrando sesión...
+                            </>
+                        ) : (
+                            <>
+                                <LogOut className="w-5 h-5 mr-2" />
+                                Cerrar sesión
+                            </>
+                        )}
                     </button>
                 </div>
 
