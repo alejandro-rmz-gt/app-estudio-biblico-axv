@@ -6,6 +6,7 @@ import { Read } from '../app/sections/read/Read';
 import { Search } from '../app/sections/search/Search';
 import { Star } from '../app/sections/star/Star';
 import { TabBar } from '../app/ui/TabBar';
+import { AuthContainer } from '../auth/AuthContainer';
 
 export const AppRouter = () => {
     return (
@@ -18,6 +19,8 @@ export const AppRouter = () => {
                     <Route path="/buscar" element={<Search />} />
                     <Route path="/favoritos" element={<Star />} />
                     <Route path="/perfil" element={<Profile />} />
+
+                    <Route path="/auth" element={<AuthContainer />} />
                 </Routes>
 
                 {/* TabBar siempre visible */}
