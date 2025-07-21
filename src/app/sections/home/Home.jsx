@@ -7,8 +7,31 @@ import {
     Clock,
     Heart,
 } from 'lucide-react';
+import { useAuth } from '../../../context/AuthContext';
+import { useEffect } from 'react';
 
 export const Home = () => {
+    const { currentUser, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        console.log('=== 👤 DATOS DEL USUARIO AUTENTICADO ===');
+        console.log('Usuario completo:', currentUser);
+        console.log('¿Está autenticado?:', isAuthenticated);
+
+        if (currentUser) {
+            console.log('📧 Email:', currentUser.email);
+            console.log('👤 Nombre:', currentUser.displayName);
+            console.log('🆔 UID:', currentUser.uid);
+            console.log(
+                '📅 Fecha de creación:',
+                currentUser.metadata?.creationTime
+            );
+            console.log('🔐 Email verificado:', currentUser.emailVerified);
+            console.log('📱 Proveedor:', currentUser.providerData);
+        }
+        console.log('===========================================');
+    }, [currentUser, isAuthenticated]);
+
     // Datos simulados (después vendrán de tu API/estado global)
     const userData = {
         name: 'María',
