@@ -1,8 +1,8 @@
 // src/firebase/config.js
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore'; // ← IMPORTANTE: Esta línea
 
-// Configuración usando variables de entorno para Vite
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -12,11 +12,10 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 
-// Inicializar Authentication y exportarlo para usar en otros archivos
 export const auth = getAuth(app);
+export const db = getFirestore(app); // ← IMPORTANTE: Esta línea
 
-// Exportar la app por si la necesitas
+console.log('🔥 Firebase inicializado correctamente');
 export default app;
