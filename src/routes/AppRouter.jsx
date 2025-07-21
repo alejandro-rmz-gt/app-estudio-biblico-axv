@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
 import { ProtectedRoute } from '../components/ProtectedRoute';
+import { AuthRedirect } from '../components/AuthRedirect';
 
 // Componentes de la app
 import { Home } from '../app/sections/home/Home';
@@ -27,8 +28,15 @@ export const AppRouter = () => {
                 {/* Contenedor principal */}
                 <div className="min-h-screen bg-gray-50">
                     <Routes>
-                        {/* Ruta pública de autenticación */}
-                        <Route path="/auth" element={<AuthContainer />} />
+                        {/* Ruta pública de autenticación con protección anti-retorno */}
+                        <Route
+                            path="/auth"
+                            element={
+                                <AuthRedirect>
+                                    <AuthContainer />
+                                </AuthRedirect>
+                            }
+                        />
 
                         {/* Rutas protegidas */}
                         <Route
