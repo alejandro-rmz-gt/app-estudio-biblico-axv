@@ -17,7 +17,7 @@ export const Read = () => {
     const [currentBook, setCurrentBook] = useState('Juan');
     const [currentChapter, setCurrentChapter] = useState(3);
     const [selectedVerse, setSelectedVerse] = useState(null);
-    const [favorites, setFavorites] = useState(new Set([16])); // Versículos favoritos
+    const [favorites, setFavorites] = useState(new Set([16]));
     const [showSettings, setShowSettings] = useState(false);
     const [fontSize, setFontSize] = useState('text-lg');
     const [isDarkMode, setIsDarkMode] = useState(false);

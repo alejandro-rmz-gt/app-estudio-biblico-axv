@@ -9,32 +9,68 @@ import {
     Share2,
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Home = () => {
     const { currentUser, isAuthenticated } = useAuth();
-    // useEffect(() => {
-    //     console.log('=== 👤 DATOS DEL USUARIO AUTENTICADO ===');
-    //     console.log('Usuario completo:', currentUser);
-    //     console.log('¿Está autenticado?:', isAuthenticated);
+    const [userDisplayName, setUserDisplayName] = useState('');
 
-    //     if (currentUser) {
-    //         console.log('📧 Email:', currentUser.email);
-    //         console.log('👤 Nombre:', currentUser.displayName);
-    //         console.log('🆔 UID:', currentUser.uid);
-    //         console.log(
-    //             '📅 Fecha de creación:',
-    //             currentUser.metadata?.creationTime
-    //         );
-    //         console.log('🔐 Email verificado:', currentUser.emailVerified);
-    //         console.log('📱 Proveedor:', currentUser.providerData);
-    //     }
-    //     console.log('===========================================');
-    // }, [currentUser, isAuthenticated]);
+    useEffect(() => {
+        console.log('=== 👤 DATOS DEL USUARIO AUTENTICADO ===');
+        console.log('Usuario completo:', currentUser);
+        console.log('¿Está autenticado?:', isAuthenticated);
+
+        if (currentUser) {
+            console.log('📧 Email:', currentUser.email);
+            console.log('👤 Nombre:', currentUser.displayName);
+            console.log('🆔 UID:', currentUser.uid);
+            console.log(
+                '📅 Fecha de creación:',
+                currentUser.metadata?.creationTime
+            );
+            console.log('🔐 Email verificado:', currentUser.emailVerified);
+            console.log('📱 Proveedor:', currentUser.providerData);
+
+            // Extraer el nombre del usuario
+            let displayName = '';
+            if (currentUser.displayName) {
+                displayName = currentUser.displayName.split(' ')[0]; // Tomar solo el primer nombre
+            } else if (currentUser.email) {
+                displayName = currentUser.email.split('@')[0]; // Usar la parte antes del @ del email
+            } else {
+                displayName = 'Usuario'; // Nombre por defecto
+            }
+            setUserDisplayName(displayName);
+        }
+        console.log('===========================================');
+    }, [currentUser, isAuthenticated]);
+
+    // Función para obtener la hora del día y personalizar el saludo
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Buenos días';
+        if (hour < 18) return 'Buenas tardes';
+        return 'Buenas noches';
+    };
+
+    // Función para mostrar cuándo se registró el usuario
+    const getAccountAge = () => {
+        if (!currentUser?.metadata?.creationTime) return null;
+
+        const creationDate = new Date(currentUser.metadata.creationTime);
+        const now = new Date();
+        const diffTime = Math.abs(now - creationDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) return 'Te uniste ayer';
+        if (diffDays < 7) return `Te uniste hace ${diffDays} días`;
+        if (diffDays < 30)
+            return `Te uniste hace ${Math.floor(diffDays / 7)} semanas`;
+        return `Te uniste hace ${Math.floor(diffDays / 30)} meses`;
+    };
 
     // Datos simulados (después vendrán de tu API/estado global)
     const userData = {
-        name: 'María',
         currentStreak: 5,
         weeklyProgress: 65,
         lastRead: {
@@ -54,27 +90,33 @@ export const Home = () => {
         },
     };
 
+    // Si no está autenticado, mostrar mensaje
+    if (!isAuthenticated || !currentUser) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center">
+                <div className="text-center">
+                    <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h2 className="text-xl font-semibold text-gray-700 mb-2">
+                        Cargando tu información...
+                    </h2>
+                    <p className="text-gray-500">Por favor espera un momento</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50">
-            {/* Header con saludo */}
+            {/* Header con saludo personalizado */}
             <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white px-6 pt-12 pb-8">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-bold">
-                            ¡Hola, {userData.name}! 👋
+                            {getGreeting()}, {userDisplayName}!
                         </h1>
                         <p className="text-blue-200 mt-1">
                             Que tengas un día bendecido
                         </p>
-                    </div>
-                    <div className="text-right">
-                        <div className="flex items-center text-yellow-300">
-                            <Target className="w-5 h-5 mr-1" />
-                            <span className="text-lg font-bold">
-                                {userData.currentStreak}
-                            </span>
-                        </div>
-                        <p className="text-blue-200 text-sm">días seguidos</p>
                     </div>
                 </div>
             </div>
@@ -175,6 +217,34 @@ export const Home = () => {
                             <BookOpen className="w-5 h-5 mr-2" />
                             Leer devocional completo
                         </button>
+
+                        {/* Información del usuario personalizada */}
+                        <div className="bg-blue-50 rounded-lg p-3 mt-4">
+                            <div className="flex items-center justify-between text-sm">
+                                <span className="text-gray-600">
+                                    Registrado como:
+                                </span>
+                                <span className="font-medium text-blue-700">
+                                    {currentUser.email}
+                                </span>
+                            </div>
+                            {currentUser.metadata?.creationTime && (
+                                <div className="flex items-center justify-between text-sm mt-1">
+                                    <span className="text-gray-600">
+                                        Miembro desde:
+                                    </span>
+                                    <span className="text-blue-600">
+                                        {new Date(
+                                            currentUser.metadata.creationTime
+                                        ).toLocaleDateString('es-ES', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                        })}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
