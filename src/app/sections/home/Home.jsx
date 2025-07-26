@@ -6,31 +6,31 @@ import {
     TrendingUp,
     Clock,
     Heart,
+    Share2,
 } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { useEffect } from 'react';
 
 export const Home = () => {
     const { currentUser, isAuthenticated } = useAuth();
+    // useEffect(() => {
+    //     console.log('=== 👤 DATOS DEL USUARIO AUTENTICADO ===');
+    //     console.log('Usuario completo:', currentUser);
+    //     console.log('¿Está autenticado?:', isAuthenticated);
 
-    useEffect(() => {
-        console.log('=== 👤 DATOS DEL USUARIO AUTENTICADO ===');
-        console.log('Usuario completo:', currentUser);
-        console.log('¿Está autenticado?:', isAuthenticated);
-
-        if (currentUser) {
-            console.log('📧 Email:', currentUser.email);
-            console.log('👤 Nombre:', currentUser.displayName);
-            console.log('🆔 UID:', currentUser.uid);
-            console.log(
-                '📅 Fecha de creación:',
-                currentUser.metadata?.creationTime
-            );
-            console.log('🔐 Email verificado:', currentUser.emailVerified);
-            console.log('📱 Proveedor:', currentUser.providerData);
-        }
-        console.log('===========================================');
-    }, [currentUser, isAuthenticated]);
+    //     if (currentUser) {
+    //         console.log('📧 Email:', currentUser.email);
+    //         console.log('👤 Nombre:', currentUser.displayName);
+    //         console.log('🆔 UID:', currentUser.uid);
+    //         console.log(
+    //             '📅 Fecha de creación:',
+    //             currentUser.metadata?.creationTime
+    //         );
+    //         console.log('🔐 Email verificado:', currentUser.emailVerified);
+    //         console.log('📱 Proveedor:', currentUser.providerData);
+    //     }
+    //     console.log('===========================================');
+    // }, [currentUser, isAuthenticated]);
 
     // Datos simulados (después vendrán de tu API/estado global)
     const userData = {
@@ -101,53 +101,6 @@ export const Home = () => {
                     </div>
                 </div>
 
-                {/* Progreso semanal */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center">
-                            <TrendingUp className="w-5 h-5 text-orange-500 mr-2" />
-                            <h2 className="font-semibold text-gray-800">
-                                Progreso esta semana
-                            </h2>
-                        </div>
-                        <span className="text-orange-600 font-bold text-lg">
-                            {userData.weeklyProgress}%
-                        </span>
-                    </div>
-
-                    {/* Barra de progreso */}
-                    <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-                        <div
-                            className="bg-gradient-to-r from-orange-400 to-orange-500 h-3 rounded-full transition-all duration-500"
-                            style={{ width: `${userData.weeklyProgress}%` }}
-                        ></div>
-                    </div>
-
-                    {/* Stats semanales */}
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-gray-800">
-                                {userData.weeklyStats.chaptersRead}
-                            </div>
-                            <div className="text-gray-500 text-sm">
-                                Capítulos
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-gray-800">
-                                {userData.weeklyStats.totalMinutes}
-                            </div>
-                            <div className="text-gray-500 text-sm">Minutos</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-gray-800">
-                                {userData.weeklyStats.daysRead}
-                            </div>
-                            <div className="text-gray-500 text-sm">Días</div>
-                        </div>
-                    </div>
-                </div>
-
                 {/* Continuar leyendo */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                     <div className="flex items-center mb-4">
@@ -180,25 +133,47 @@ export const Home = () => {
                     </button>
                 </div>
 
-                {/* Accesos rápidos */}
+                {/* Devocional de hoy */}
                 <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h2 className="font-semibold text-gray-800 mb-4">
-                        Accesos rápidos
-                    </h2>
+                    <div className="flex items-center mb-4">
+                        <Heart className="w-5 h-5 text-orange-500 mr-2" />
+                        <h2 className="font-semibold text-gray-800">
+                            Devocional de hoy
+                        </h2>
+                    </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <button className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl hover:from-blue-100 hover:to-blue-200 transition-all duration-200">
-                            <Calendar className="w-8 h-8 text-blue-600 mb-2" />
-                            <span className="text-blue-800 font-medium text-sm">
-                                Plan de lectura
-                            </span>
-                        </button>
+                    <div className="space-y-4">
+                        {/* Tema del devocional */}
+                        <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-4">
+                            <h3 className="font-medium text-gray-800 mb-2">
+                                "Confía en Su plan perfecto"
+                            </h3>
+                            <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                                Cuando las cosas no salen como esperamos,
+                                recordemos que Dios tiene un plan perfecto para
+                                cada uno de nosotros.
+                            </p>
+                            <div className="flex items-center text-orange-600 text-sm">
+                                <Clock className="w-4 h-4 mr-1" />
+                                <span>5 min de lectura</span>
+                            </div>
+                        </div>
 
-                        <button className="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl hover:from-yellow-100 hover:to-yellow-200 transition-all duration-200">
-                            <Clock className="w-8 h-8 text-yellow-600 mb-2" />
-                            <span className="text-yellow-800 font-medium text-sm">
-                                Devocional
+                        {/* Versículo de apoyo */}
+                        <div className="border-l-4 border-orange-400 pl-4">
+                            <p className="text-gray-700 italic text-sm">
+                                "Confía en el Señor de todo corazón, y no en tu
+                                propia inteligencia."
+                            </p>
+                            <span className="text-orange-600 font-medium text-sm">
+                                Proverbios 3:5
                             </span>
+                        </div>
+
+                        {/* Botón principal */}
+                        <button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium py-3 px-4 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 flex items-center justify-center">
+                            <BookOpen className="w-5 h-5 mr-2" />
+                            Leer devocional completo
                         </button>
                     </div>
                 </div>
